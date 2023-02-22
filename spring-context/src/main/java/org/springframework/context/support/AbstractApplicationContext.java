@@ -788,6 +788,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>
 	 * Instantiate and invoke all registered BeanFactoryPostProcessor beans,
 	 * respecting explicit order if given.
+	 * 单例bean实例化之前必须被调用
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
