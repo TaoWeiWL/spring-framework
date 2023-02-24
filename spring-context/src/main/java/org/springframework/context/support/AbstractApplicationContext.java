@@ -263,9 +263,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	/**
+	 * 创建一个无父类的AbstractApplicationContext
 	 * Create a new AbstractApplicationContext with no parent.
 	 */
 	public AbstractApplicationContext() {
+		// 创建资源模式处理器（用于解析当前应用程序运行所需要的资源，比如配置文件）
 		this.resourcePatternResolver = getResourcePatternResolver();
 	}
 
@@ -359,6 +361,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public ConfigurableEnvironment getEnvironment() {
 		if (this.environment == null) {
+			// 创建环境对象
 			this.environment = createEnvironment();
 		}
 		return this.environment;
@@ -370,6 +373,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * a custom {@link ConfigurableEnvironment} implementation.
 	 */
 	protected ConfigurableEnvironment createEnvironment() {
+		// 调用隐式的构造方法创建一个标准的环境对象，该隐式的构造方法会调用父类AbstractEnvironment的构造方法，最终会调用父类AbstractEnvironment的构造方法
 		return new StandardEnvironment();
 	}
 
@@ -503,6 +507,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */
 	protected ResourcePatternResolver getResourcePatternResolver() {
+		// 创建资源模式解析器，使用默认的资源模式解析器，主要用于解析xml配置文件
 		return new PathMatchingResourcePatternResolver(this);
 	}
 
