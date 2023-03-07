@@ -164,16 +164,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	/**
+	 * 创建日志对象
 	 * Logger used by this class. Available to subclasses.
 	 */
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/**
+	 * 创建容器的唯一id
 	 * Unique id for this context, if any.
 	 */
 	private String id = ObjectUtils.identityToString(this);
 
 	/**
+	 * 创建容器展示的名称
 	 * Display name.
 	 */
 	private String displayName = ObjectUtils.identityToString(this);
@@ -277,7 +280,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @param parent the parent context
 	 */
 	public AbstractApplicationContext(@Nullable ApplicationContext parent) {
+		// 调用无参构造方法
 		this();
+		// 设置父容器
 		setParent(parent);
 	}
 
@@ -528,6 +533,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void setParent(@Nullable ApplicationContext parent) {
 		this.parent = parent;
+		// 父容器不为空的情况下，将父容器的环境变量合并到当前容器的环境变量中
 		if (parent != null) {
 			Environment parentEnvironment = parent.getEnvironment();
 			if (parentEnvironment instanceof ConfigurableEnvironment) {

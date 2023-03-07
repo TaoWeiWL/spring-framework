@@ -109,6 +109,7 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
 	private final MutablePropertySources propertySources = new MutablePropertySources();
 
+	// 构造用于解析属性的对象，构造是传入propertySources，包含了所有的系统属性和系统环境
 	private final ConfigurablePropertyResolver propertyResolver =
 			new PropertySourcesPropertyResolver(this.propertySources);
 
@@ -567,8 +568,16 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 		return this.propertyResolver.resolvePlaceholders(text);
 	}
 
+	/**
+	 * 解析占位符
+	 *
+	 * @param text 需要解析的文本字符串
+	 * @return 解析后的文本字符串
+	 * @throws IllegalArgumentException
+	 */
 	@Override
 	public String resolveRequiredPlaceholders(String text) throws IllegalArgumentException {
+		// 执行解析
 		return this.propertyResolver.resolveRequiredPlaceholders(text);
 	}
 

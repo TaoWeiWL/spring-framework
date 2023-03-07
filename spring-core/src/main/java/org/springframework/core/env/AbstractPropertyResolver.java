@@ -205,8 +205,10 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 	@Override
 	public String resolveRequiredPlaceholders(String text) throws IllegalArgumentException {
 		if (this.strictHelper == null) {
+			// 构造解析占位符的helper
 			this.strictHelper = createPlaceholderHelper(false);
 		}
+		// 执行解析占位符
 		return doResolvePlaceholders(text, this.strictHelper);
 	}
 
@@ -235,6 +237,12 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 				this.valueSeparator, ignoreUnresolvablePlaceholders);
 	}
 
+	/**
+	 * 执行将配置文件中的占位符解析替换为对应的值
+	 * @param text 需要解析的文本字符串
+	 * @param helper 解析工具类helper
+	 * @return 解析后的文本字符串
+	 */
 	private String doResolvePlaceholders(String text, PropertyPlaceholderHelper helper) {
 		return helper.replacePlaceholders(text, this::getPropertyAsRawString);
 	}
