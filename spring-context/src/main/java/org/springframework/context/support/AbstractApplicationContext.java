@@ -248,17 +248,23 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	private ApplicationEventMulticaster applicationEventMulticaster;
 
 	/**
+	 * 容器刷新完成，程序运行过程中的监听器
+	 *
 	 * Statically specified listeners.
 	 */
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
 	/**
+	 * 容器刷新前的本地监听器注册的集合
+	 *
 	 * Local listeners registered before refresh.
 	 */
 	@Nullable
 	private Set<ApplicationListener<?>> earlyApplicationListeners;
 
 	/**
+	 * 在多播器设置之前发布的applicationEvent集合
+	 *
 	 * ApplicationEvents published before the multicaster setup.
 	 */
 	@Nullable
@@ -670,16 +676,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
-		// 初始化占位符属性资源，子类进行实现
+		// 初始化占位符属性资源，子类进行实现，扩展点
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
-		// 创建并获取环境对象，验证需要的属性文件是否都已经放入环境中
+		// 创建并获取环境对象，验证需要的属性资源是否都已经放入环境对象中
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
 		// 判断刷新前的应用程序监听器集合是否为空，如果为空，则将监听器添加到此集合中
+		// 在SpringBoot中，会自动装配多个监听器并放入applicationListeners，会将监听器添加到此集合中
 		if (this.earlyApplicationListeners == null) {
 			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
 		} else {
@@ -691,11 +698,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 		// Allow for the collection of early ApplicationEvents,
 		// to be published once the multicaster is available...
-		// 创建刷新前的监听事件集合
+		// 创建刷新前的监听事件集合，容器刷新之前置为空
 		this.earlyApplicationEvents = new LinkedHashSet<>();
 	}
 
 	/**
+	 * 扩展点：以实际的值替换属性源中的占位符属性
+	 *
 	 * <p>Replace any stub property sources with actual instances.
 	 *
 	 * @see org.springframework.core.env.PropertySource.StubPropertySource

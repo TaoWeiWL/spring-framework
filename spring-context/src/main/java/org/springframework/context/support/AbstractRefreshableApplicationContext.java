@@ -113,20 +113,28 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 
 	/**
+	 * 此实现执行底层beanFactory的实际刷新，关闭以前的beanFactory（如果有），
+	 * 并为生命周期的下一阶段初始化一个新的beanFactory
+	 *
 	 * This implementation performs an actual refresh of this context's underlying
 	 * bean factory, shutting down the previous bean factory (if any) and
 	 * initializing a fresh bean factory for the next phase of the context's lifecycle.
 	 */
 	@Override
 	protected final void refreshBeanFactory() throws BeansException {
+		// 如果已经存在beanFactory，则销毁beanFactory
 		if (hasBeanFactory()) {
 			destroyBeans();
 			closeBeanFactory();
 		}
 		try {
+			// 创建一个DefaultListableBeanFactory对象
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			// 设置beanFactory的id，即容器的id
 			beanFactory.setSerializationId(getId());
+			// 自定义beanFactory的一些属性，即是否允许覆盖beanDefinition、是否允许循环依赖
 			customizeBeanFactory(beanFactory);
+			// 初始化documentReader,并进行XML文件读取及解析,默认命名空间的解析，自定义标签的解析
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
@@ -194,6 +202,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see org.springframework.beans.factory.support.DefaultListableBeanFactory#setAllowRawInjectionDespiteWrapping
 	 */
 	protected DefaultListableBeanFactory createBeanFactory() {
+		// 以父容器的beanFactory为父beanFactory创建一个DefaultListableBeanFactory对象
 		return new DefaultListableBeanFactory(getInternalParentBeanFactory());
 	}
 
@@ -212,9 +221,12 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
+		// 扩展点，可以自定义子类重写此方法，自定义beanFactory的一些属性
+		// 判断当前对象的allowBeanDefinitionOverriding属性是否为空，不为空则设置到beanFactory中，是否允许覆盖同名称的不同的beanDefinition
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
+		// 判断当前对象的allowCircularReferences属性是否为空，不为空则设置到beanFactory中，是否允许bean之间的循环依赖
 		if (this.allowCircularReferences != null) {
 			beanFactory.setAllowCircularReferences(this.allowCircularReferences);
 		}
