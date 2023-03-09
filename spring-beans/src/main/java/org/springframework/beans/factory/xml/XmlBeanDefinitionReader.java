@@ -307,6 +307,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		// 将资源转换为EncodedResource再加载
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
@@ -391,8 +392,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
-			// 通过SAX解析XML文件并返回Document对象，该Document对象是对XML文件的抽象
+			// 通过SAX解析XML文件并返回Document对象，该Document对象是对XML文件的抽象，可以通过该对象获取XML文件中的所有信息
+			// Document对象包含了xml文件中的节点，子节点，属性等信息
+			// xml文件解析为Document对象的过程称为DOM解析，不作具体的解析过程分析
 			Document doc = doLoadDocument(inputSource, resource);
+			// 根据解析得到的Document对象注册BeanDefinition
 			int count = registerBeanDefinitions(doc, resource);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
@@ -511,8 +515,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		// 创建BeanDefinitionDocumentReader对象
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		// 记录已经注册的BeanDefinition的数量
 		int countBefore = getRegistry().getBeanDefinitionCount();
+		// 执行具体的解析过程
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
@@ -524,6 +531,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see #setDocumentReaderClass
 	 */
 	protected BeanDefinitionDocumentReader createBeanDefinitionDocumentReader() {
+		// 创建DefaultBeanDefinitionDocumentReader对象
 		return BeanUtils.instantiateClass(this.documentReaderClass);
 	}
 
@@ -531,6 +539,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * Create the {@link XmlReaderContext} to pass over to the document reader.
 	 */
 	public XmlReaderContext createReaderContext(Resource resource) {
+		// 构造XmlReaderContext对象
 		return new XmlReaderContext(resource, this.problemReporter, this.eventListener,
 				this.sourceExtractor, this, getNamespaceHandlerResolver());
 	}

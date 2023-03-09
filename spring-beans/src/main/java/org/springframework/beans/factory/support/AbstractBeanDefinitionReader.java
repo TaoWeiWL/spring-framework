@@ -109,6 +109,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 
 	@Override
 	public final BeanDefinitionRegistry getRegistry() {
+		// DefaultListableBeanFactory
 		return this.registry;
 	}
 
@@ -185,6 +186,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 		Assert.notNull(resources, "Resource array must not be null");
 		int count = 0;
 		for (Resource resource : resources) {
+			// 使用XmlBeanDefinitionReader的loadBeanDefinitions方法加载BeanDefinition
 			count += loadBeanDefinitions(resource);
 		}
 		return count;
@@ -222,7 +224,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 			// Resource pattern matching available.
 			// 资源匹配模式可用
 			try {
-				// 调用DefaultResourceLoader的getResources方法完成具体的resource定位
+				// 调用DefaultResourceLoader的getResources方法(PathMatchingResourcePatternResolver.getResources)完成具体的resource定位
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
 				int count = loadBeanDefinitions(resources);
 				if (actualResources != null) {

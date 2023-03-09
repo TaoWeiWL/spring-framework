@@ -454,6 +454,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Override
 	public int getBeanDefinitionCount() {
+		// beanDefinitionMap的size，该map中存放的是所有已经注册的bean定义
 		return this.beanDefinitionMap.size();
 	}
 
