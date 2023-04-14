@@ -92,6 +92,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 */
 	@Override
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
+		// 此处完成了将XmlReaderContext赋值给了readerContext
 		this.readerContext = readerContext;
 		// 执行具体的解析注册逻辑
 		doRegisterBeanDefinitions(doc.getDocumentElement());
@@ -128,7 +129,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// this behavior emulates a stack of delegates without actually necessitating one.
 		// BeanDefinitionParserDelegate用于解析获取BeanDefinition
 		BeanDefinitionParserDelegate parent = this.delegate;
-		// 创建解析委托器
+		// 创建解析委托器，此处完成了将XmlReaderContext赋值给了readerContext
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
 		if (this.delegate.isDefaultNamespace(root)) {
@@ -183,6 +184,17 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 					}
 					// 解析自定义命名空间的标签
 					else {
+						// 在resources/META-INF/spring.schemas中配置定义了xml配置文件的xsd/dtd文件映射关系
+						// 通过这个映射关系，可以找到对应的xsd/dtd文件，从而规范xml配置文件的格式
+						// 在resources/META-INF/spring.handlers中配置了自定义命名空间标签的解析器映射
+						// 通过这个映射关系，可以找到对应的解析器，从而解析自定义命名空间的标签
+						// 在对应的解析器中，定义了自定义命名空间标签的每一个属性的解析规则，例如ContextNamespaceHandler
+
+						// 如果需要自定义标签需要以下几个步骤：
+						// 1.创建对应的自定义的命名空间标签解析器
+						// 2.在resources/META-INF/spring.handlers中配置自定义命名空间标签解析器的映射关系
+                        // 3.创建对应标签的的属性的Parser类
+						// 4.在第一步创建的解析器类的init方法中添加对应的属性Parser类的映射关系
 						delegate.parseCustomElement(ele);
 					}
 				}
@@ -334,10 +346,11 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// beanDefinition是通过BeanDefinitionParserDelegate对xml元素的信息按照spring的bean规则进行解析得到的
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
+			//解析后对beanDefinition进行装饰
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
 				// Register the final decorated instance.
-				// 向ioc容器注册解析得到的beandefinition
+				// 向ioc容器注册解析得到的beanDefinition
 				BeanDefinitionReaderUtils.registerBeanDefinition(bdHolder, getReaderContext().getRegistry());
 			}
 			catch (BeanDefinitionStoreException ex) {
