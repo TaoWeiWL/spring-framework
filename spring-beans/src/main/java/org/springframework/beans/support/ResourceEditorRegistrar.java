@@ -82,6 +82,8 @@ public class ResourceEditorRegistrar implements PropertyEditorRegistrar {
 
 
 	/**
+	 * 注册自定义的属性编辑器，完成自定义属性编辑器注册的核心方法
+	 *
 	 * Populate the given {@code registry} with the following resource editors:
 	 * ResourceEditor, InputStreamEditor, InputSourceEditor, FileEditor, URLEditor,
 	 * URIEditor, ClassEditor, ClassArrayEditor.
@@ -121,6 +123,8 @@ public class ResourceEditorRegistrar implements PropertyEditorRegistrar {
 	}
 
 	/**
+	 * 覆盖默认的属性编辑器
+	 *
 	 * Override default editor, if possible (since that's what we really mean to do here);
 	 * otherwise register as a custom editor.
 	 */

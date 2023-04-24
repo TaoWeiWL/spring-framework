@@ -29,6 +29,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
+ * 此类用来方便的注册一个用户自定义的属性编辑器
+ *
  * {@link BeanFactoryPostProcessor} implementation that allows for convenient
  * registration of custom {@link PropertyEditor property editors}.
  *
@@ -93,6 +95,10 @@ import org.springframework.util.ClassUtils;
  * @see ConfigurableBeanFactory#registerCustomEditor
  * @see org.springframework.validation.DataBinder#registerCustomEditor
  */
+
+/**
+ * 实现了BeanFactoryPostProcessor接口，用来注册自定义的属性编辑器
+ */
 public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered {
 
 	protected final Log logger = LogFactory.getLog(getClass());
@@ -142,12 +148,17 @@ public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered
 
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		// 如果属性编辑注册器不等于空
 		if (this.propertyEditorRegistrars != null) {
+			// 遍历属性编辑注册器的集合
 			for (PropertyEditorRegistrar propertyEditorRegistrar : this.propertyEditorRegistrars) {
+				// 将属性编辑注册器添加到beanFactory
 				beanFactory.addPropertyEditorRegistrar(propertyEditorRegistrar);
 			}
 		}
+		// 如果自定义编辑器不等于空
 		if (this.customEditors != null) {
+			// 遍历自定义编辑器集合将自定义编辑器添加到beanFactory中
 			this.customEditors.forEach(beanFactory::registerCustomEditor);
 		}
 	}

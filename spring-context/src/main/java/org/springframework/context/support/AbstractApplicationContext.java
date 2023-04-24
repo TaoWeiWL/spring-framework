@@ -591,12 +591,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
-			// beanFactory的准备工作，对各种属性进行填充
+			// beanFactory的准备工作，对其中的各种属性进行填充
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
 				// 子类实现方法做额外处理，此处自己一般不做任何扩展工作，可以查看web中的代码，有具体实现
+				// 此处注意区分BeanFactoryPostProcessor的postProcessBeanFactory方法，两者无关联，此处是Spring提供的扩展点
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
@@ -729,6 +730,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * beanFactory的准备工作，对其中的各种属性进行填充
+	 *
 	 * Configure the factory's standard context characteristics,
 	 * such as the context's ClassLoader and post-processors.
 	 *
@@ -738,13 +741,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Tell the internal bean factory to use the context's class loader etc.
 		// 设置beanFactory的classloader为当前context的classloader
 		beanFactory.setBeanClassLoader(getClassLoader());
-		// 设置beanFactory的SPEL表达式语言处理器
+		// 设置beanFactory的SPEL表达式语言处理器，仅仅做了设置并未做任何的处理
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
 		// 为beanFactory增加一个默认的propertyEditor，主要是对bean的属性等设置管理的一个工具类
+		// 对属性进行转换，比如日期格式化
+		// 注意此处为扩展点，扩展步骤如下：
+		// 1.创建一个属性编辑器注册器类，实现PropertyEditorRegistrar接口
+		// 2.创建一个属性编辑器类，继承PropertyEditorSupport类
+		// 3.在属性编辑器注册器类中，重写registerCustomEditors方法，将属性编辑器注册到属性编辑器注册器中
+		// 此处仅完成了属性编辑器注册器的注册，并未完成属性编辑
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.
-		// 添加beanPostProcessor，ApplicationContextAwareProcessor类用来完成某些Aware对象的注入
+		// 添加beanPostProcessor（后置处理器），ApplicationContextAwareProcessor类用来完成某些Aware对象的注入
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 		// 设置要忽略自动装配的接口，原因是这些接口的实现是由容器通过set方法进行注入的，所以在使用autowire进行注入的时候需要将这些接口进行忽略
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
@@ -763,11 +772,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
 		// Register early post-processor for detecting inner beans as ApplicationListeners.
-		// 注册beanPostProcessor
+		// 注册beanPostProcessor，应用程序监听器的探测器
 		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found.
-		// 增加对AspectJ的支持，在java中织入分为三种方式，分为编译器织入，类加载器织入，运行期织入，
+		// 增加对AspectJ的支持，在java中织入分为三种方式，分为编译期织入，类加载期织入，运行期织入，
 		// 编译器织入是指在java编译器，采用特殊的编译器，将切面织入到java类中，
 		// 而类加载期织入则指通过特殊的类加载器，在类字节码加载到JVM时，织入切面，
 		// 运行期织入则是采用cglib和jdk进行切面的织入

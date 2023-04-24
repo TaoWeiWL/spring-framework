@@ -91,25 +91,49 @@ import org.springframework.util.ClassUtils;
  */
 public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 
+	/**
+	 * 转换服务
+	 */
 	@Nullable
 	private ConversionService conversionService;
 
+	/**
+	 * 默认编辑器是否激活
+	 */
 	private boolean defaultEditorsActive = false;
 
+	/**
+	 * String、int、long、short数组属性编辑器是否激活
+	 */
 	private boolean configValueEditorsActive = false;
 
+	/**
+	 * 默认属性编辑器集合
+	 */
 	@Nullable
 	private Map<Class<?>, PropertyEditor> defaultEditors;
 
+	/**
+	 * 覆盖默认属性编辑器集合
+	 */
 	@Nullable
 	private Map<Class<?>, PropertyEditor> overriddenDefaultEditors;
 
+	/**
+	 * 自定义属性编辑器集合
+	 */
 	@Nullable
 	private Map<Class<?>, PropertyEditor> customEditors;
 
+	/**
+	 * 自定义路径属性编辑器集合
+	 */
 	@Nullable
 	private Map<String, CustomEditorHolder> customEditorsForPath;
 
+	/**
+	 * 自定义属性编辑器缓存集合
+	 */
 	@Nullable
 	private Map<Class<?>, PropertyEditor> customEditorCache;
 
@@ -195,6 +219,8 @@ public class PropertyEditorRegistrySupport implements PropertyEditorRegistry {
 	}
 
 	/**
+	 * 注册默认的编辑器对于给定的注册器实例
+	 *
 	 * Actually register the default editors for this registry instance.
 	 */
 	private void createDefaultEditors() {

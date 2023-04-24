@@ -75,6 +75,12 @@ public class FileEditor extends PropertyEditorSupport {
 	}
 
 
+	/**
+	 * 完成属性编辑的核心方法
+	 *
+	 * @param text  The string to be parsed.
+	 * @throws IllegalArgumentException
+	 */
 	@Override
 	public void setAsText(String text) throws IllegalArgumentException {
 		if (!StringUtils.hasText(text)) {
