@@ -58,6 +58,11 @@ import org.springframework.beans.BeansException;
  * @since 06.07.2003
  * @see BeanPostProcessor
  * @see PropertyResourceConfigurer
+ *
+ * BeanFactoryPostProcessor和BeanDefinitionRegistryPostProcessor注意区分：
+ * 后者是前者的子接口（继承关系），也就是前者的子集
+ * 前者是对beanFactory的后置处理器（对beanFactory进行操作），后者是对beanDefinition的后置处理器（对beanDefinition进行操作）
+ * 前者内部包含了beanDefinition，因此前者也可以对beanDefinition进行操作
  */
 @FunctionalInterface
 public interface BeanFactoryPostProcessor {
